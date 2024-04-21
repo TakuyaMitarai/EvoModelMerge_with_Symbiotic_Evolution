@@ -4,7 +4,7 @@ from transformers.models.gpt2.modeling_gpt2 import *
 from typing import Optional, Tuple, Union
 
 class SCALE_GPT2Block(nn.Module):
-    def __init__(self, config, layer_idx=None):
+    def __init__(self, config, layer_idx):
         super().__init__()
         hidden_size = config.hidden_size
         inner_dim = config.n_inner if config.n_inner is not None else 4 * hidden_size
@@ -72,8 +72,9 @@ class SCALE_GPT2Block(nn.Module):
         hidden_states = self.ln_2(hidden_states)
         feed_forward_hidden_states = self.mlp(hidden_states)
         # residual connection
-        hidden_states = self.scaling_factors[0] * (residual + feed_forward_hidden_states)
-        print(self.layer_idx)
+        # hidden_states = residual + feed_forward_hidden_states
+        hidden_states = self.scaling_factors[self.layer_idx] * (residual + feed_forward_hidden_states)
+
         if use_cache:
             outputs = (hidden_states,) + outputs
         else:
