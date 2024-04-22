@@ -4,8 +4,6 @@ import numpy as np
 from transformers import AutoTokenizer, T5Tokenizer, AutoConfig
 from transformers.models.auto.modeling_auto import AutoModelForCausalLM
 import random
-import transformers.models.gpt2.modeling_gpt2
-from GPT2Block import SCALE_GPT2Block
 
 def set_seed(seed_value):
     random.seed(seed_value)
@@ -22,24 +20,23 @@ random.shuffle(layer_indices)
 for new_idx, original_idx in enumerate(layer_indices):
     new_scale_factors[new_idx] = scale_factors[original_idx]
 
-class SCALE_GPT2Block2(SCALE_GPT2Block):
-    def __init__(self, config, layer_idx):
-        super().__init__(config, layer_idx)
-        self.scaling_factors = new_scale_factors
-
-transformers.models.gpt2.modeling_gpt2.GPT2Block = SCALE_GPT2Block2
-
-tokenizer = T5Tokenizer.from_pretrained("rinna/japanese-gpt2-medium")
-original_model = AutoModelForCausalLM.from_pretrained("rinna/japanese-gpt2-medium")
+tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
+model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
+    torch_dtype=torch.float16,
+    load_in_4bit=True,
+    device_map="auto",
+    trust_remote_code=False,)
+# tokenizer = T5Tokenizer.from_pretrained("rinna/japanese-gpt2-medium")
+# custom_model = AutoModelForCausalLM.from_pretrained("rinna/japanese-gpt2-medium")
 # tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
 # original_model = AutoModelForCausalLM.from_pretrained("openai-community/gpt2")
-custom_model = original_model
+# custom_model = original_model
 
 # arrangement
-layer_indices = list(range(len(original_model.transformer.h)))
-random.shuffle(layer_indices)
-for new_idx, original_idx in enumerate(layer_indices):
-    custom_model.transformer.h[new_idx] = original_model.transformer.h[original_idx]
+# layer_indices = list(range(len(original_model.transformer.h)))
+# random.shuffle(layer_indices)
+# for new_idx, original_idx in enumerate(layer_indices):
+#     custom_model.transformer.h[new_idx] = original_model.transformer.h[original_idx]
 
 # set_seed(46)
 input_ids = tokenizer.encode("りんごは何色ですか？", return_tensors="pt")
