@@ -41,7 +41,6 @@ class SCALE_MistralDecoderLayer(nn.Module):
                 (see `past_key_values`).
             past_key_value (`Tuple(torch.FloatTensor)`, *optional*): cached past key and value projection states
         """
-
         residual = hidden_states
 
         hidden_states = self.input_layernorm(hidden_states)
@@ -55,14 +54,18 @@ class SCALE_MistralDecoderLayer(nn.Module):
             output_attentions=output_attentions,
             use_cache=use_cache,
         )
+        device = torch.device("cuda:0")
+        residual = residual.to(device)
+        hidden_states = hidden_states.to(device)
         hidden_states = residual + hidden_states
 
         # Fully Connected
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
         hidden_states = self.mlp(hidden_states)
+        residual = residual.to(device)
+        hidden_states = hidden_states.to(device)
         hidden_states = self.scaling_factors[self.self_attn.layer_idx] * (residual + hidden_states)
-
         outputs = (hidden_states,)
 
         if output_attentions:
