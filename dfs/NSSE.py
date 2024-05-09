@@ -4,7 +4,7 @@ import math
 # ハイパーパラメータ
 WPOP_SIZE = 200
 PPOP_SIZE = 200
-MAX_GENERATION = 3000
+MAX_GENERATION = 100
 WCROSSOVER_PROB = 0.5
 PCROSSOVER_PROB = 0.5
 WMUTATE_PROB = 0.01
@@ -17,7 +17,7 @@ TOURNAMENT_SIZE = 5
 class PartialIndividual:
     def __init__(self):
         self.chrom = np.random.randint(0, 2, PCHROM_LEN)
-        self.global_fitness = 1000000
+        self.global_fitness = float('inf')
 
     def crossover(self, parent1, parent2, index1, index2):
         if index1 > index2:
@@ -56,7 +56,7 @@ class PartialPopulation:
 
     def evainit(self):
         for i in range(PPOP_SIZE):
-            self.population[i].global_fitness = 1000000
+            self.population[i].global_fitness = float('inf')
 
 
 # 全体解個体
@@ -66,11 +66,11 @@ class WholeIndividual:
         for _ in range(WCHROM_LEN):
             index = np.random.randint(0, PPOP_SIZE)
             self.chrom.append(ppop.population[index])
-        self.global_fitness = 1000000
-        self.rankfit = 1000000
+        self.global_fitness = float('inf')
+        self.rankfit = float('inf')
         self.cd = 0
-        self.fitness1 = 1000000
-        self.fitness2 = 1000000
+        self.fitness1 = float('inf')
+        self.fitness2 = float('inf')
     
     def crossover(self, parent1, parent2, index1, index2):
         if index1 > index2:
@@ -163,7 +163,7 @@ def crowding_distance(tmp_rank):
                 wpop.population[tmp_rank[i]].cd += (wpop.population[tmp_rank[i+1]].fitness2 - wpop.population[tmp_rank[i-1]].fitness2) / (wpop.population[tmp_rank[len(tmp_rank) - 1]].fitness2 - wpop.population[tmp_rank[0]].fitness2)
 
 # 評価関数
-def evaluate_fitness():
+def two_objective_evaluate_fitness():
     eva_ind_cnt = 0
     rank = 1
     next_remain = []
@@ -207,7 +207,7 @@ def evaluate_fitness():
 # 初期化
 ppop = PartialPopulation()
 wpop = WholePopulation()
-evaluate_fitness()
+two_objective_evaluate_fitness()
 
 best = []
 # 世代交代
@@ -223,7 +223,7 @@ for i in range(MAX_GENERATION):
     wpop.evainit()
 
     # 適応度算出
-    evaluate_fitness()
+    two_objective_evaluate_fitness()
 
 for i in range(int(WPOP_SIZE / 2)):
     print(f"{wpop.population[i].fitness1}, {wpop.population[i].fitness2}")
