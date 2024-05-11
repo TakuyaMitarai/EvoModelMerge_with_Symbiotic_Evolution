@@ -39,7 +39,7 @@ for v in V:
     layer = v
     for attr in attributes:
         key = f"model.layers.{layer}.{attr}"
-        file_index = (v // 32) + 1
+        file_index = v + 1
         file_name = f"model-{file_index:05d}-of-00004.safetensors"
         index_data["weight_map"][key] = file_name
 

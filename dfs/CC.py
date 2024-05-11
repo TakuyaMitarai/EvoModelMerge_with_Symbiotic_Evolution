@@ -4,14 +4,14 @@ import math
 # ハイパーパラメータ
 WPOP_SIZE = 400         # 全体解集団のサイズ
 PPOP_SIZE = 400         # 部分解集団のサイズ
-MAX_GENERATION = 250    # 世代交代数
+MAX_GENERATION = 300    # 世代交代数
 WCROSSOVER_PROB = 0.5   # 全体解集団の交叉率
 PCROSSOVER_PROB = 0.5   # 部分解集団の交叉率
 WMUTATE_PROB = 0.05     # 全体解遺伝子の突然変異確率
-PMUTATE_PROB = 0.2      # 部分解遺伝子の突然変異確率
-WCHROM_LEN = 100        # 全体解個体のサイズ
-PCHROM_LEN = 20         # 部分解集団のサイズ
-TOURNAMENT_SIZE = 20    # トーナメントサイズ
+PMUTATE_PROB = 0.15      # 部分解遺伝子の突然変異確率
+WCHROM_LEN = 8        # 全体解個体のサイズ
+PCHROM_LEN = 8         # 部分解集団のサイズ
+TOURNAMENT_SIZE = 5    # トーナメントサイズ
 
 # 部分解個体
 class PartialIndividual:
@@ -64,9 +64,9 @@ class WholeIndividual:
     def __init__(self, ppop):
         self.chrom = []
         self.ppop = ppop
-        for _ in range(WCHROM_LEN):
+        for i in range(WCHROM_LEN):
             index = np.random.randint(0, PPOP_SIZE)
-            self.chrom.append(self.ppop.population[index])
+            self.chrom.append(self.ppop[i].population[index])
         self.global_fitness = float('inf')
         self.rankfit = float('inf')
         self.cd = 0
@@ -90,7 +90,7 @@ class WholeIndividual:
         for i in range(WCHROM_LEN):
             if np.random.rand() < WMUTATE_PROB:
                 index = np.random.randint(0, PPOP_SIZE)
-                self.chrom[i] = self.ppop.population[index]
+                self.chrom[i] = self.ppop[i].population[index]
 
 # 全体解集団
 class WholePopulation:
@@ -164,43 +164,59 @@ def crowding_distance(tmp_rank, wpop):
             if(wpop.population[tmp_rank[len(tmp_rank) - 1]].fitness2 - wpop.population[tmp_rank[0]].fitness2 != 0):
                 wpop.population[tmp_rank[i]].cd += (wpop.population[tmp_rank[i+1]].fitness2 - wpop.population[tmp_rank[i-1]].fitness2) / (wpop.population[tmp_rank[len(tmp_rank) - 1]].fitness2 - wpop.population[tmp_rank[0]].fitness2)
 
-# 評価関数
+# floyd問題
 def evaluate_fitness(wpop, ppop):
-    eva_ind_cnt = 0
-    rank = 1
-    next_remain = []
     for i in range(WPOP_SIZE):
-        next_remain.append(i)
-    
-    evaluate_object(wpop)
-    
-    while(eva_ind_cnt < WPOP_SIZE):
-        tmp_eva_ind_cnt = eva_ind_cnt
-        current_remain = next_remain
-        next_remain = []
-        tmp_rank = []
-
-        for i in range(WPOP_SIZE - tmp_eva_ind_cnt):
-            for j in range(WPOP_SIZE - tmp_eva_ind_cnt):
-                flag = 1
-                if(wpop.population[current_remain[i]].fitness1 >= wpop.population[current_remain[j]].fitness1
-                and wpop.population[current_remain[i]].fitness2 >= wpop.population[current_remain[j]].fitness2
-                and (wpop.population[current_remain[i]].fitness1 != wpop.population[current_remain[j]].fitness1 or wpop.population[current_remain[i]].fitness2 != wpop.population[current_remain[j]].fitness2)):
-                    next_remain.append(current_remain[i])
-                    flag = 0
-                    break
-            if(flag == 1):
-                wpop.population[current_remain[i]].rankfit = rank
-                tmp_rank.append(current_remain[i])
-                eva_ind_cnt += 1
-
-        crowding_distance(tmp_rank, wpop)
-        rank += 1
-
-    for i in range(WPOP_SIZE):
-        wpop.population[i].global_fitness = wpop.population[i].rankfit + 1 / (wpop.population[i].cd * 100 + 1)
+        fitness = 0.0
+        for j in range(WCHROM_LEN):
+            for k in range(PCHROM_LEN):
+                fitness += (wpop.population[i].chrom[j].chrom[k] * 2 - 1) * np.sqrt(j*PCHROM_LEN+k+1)
+        wpop.population[i].global_fitness = np.abs(fitness)
         for j in range(WCHROM_LEN):
             if(wpop.population[i].chrom[j].global_fitness > wpop.population[i].global_fitness):
                 wpop.population[i].chrom[j].global_fitness = wpop.population[i].global_fitness
     wpop.population.sort(key=lambda individual: individual.global_fitness)
-    ppop.population.sort(key=lambda individual: individual.global_fitness)
+    for i in range(WCHROM_LEN):
+        ppop[i].population.sort(key=lambda individual: individual.global_fitness)
+
+# 評価関数
+# def evaluate_fitness(wpop, ppop):
+#     eva_ind_cnt = 0
+#     rank = 1
+#     next_remain = []
+#     for i in range(WPOP_SIZE):
+#         next_remain.append(i)
+    
+#     evaluate_object(wpop)
+    
+#     while(eva_ind_cnt < WPOP_SIZE):
+#         tmp_eva_ind_cnt = eva_ind_cnt
+#         current_remain = next_remain
+#         next_remain = []
+#         tmp_rank = []
+
+#         for i in range(WPOP_SIZE - tmp_eva_ind_cnt):
+#             for j in range(WPOP_SIZE - tmp_eva_ind_cnt):
+#                 flag = 1
+#                 if(wpop.population[current_remain[i]].fitness1 >= wpop.population[current_remain[j]].fitness1
+#                 and wpop.population[current_remain[i]].fitness2 >= wpop.population[current_remain[j]].fitness2
+#                 and (wpop.population[current_remain[i]].fitness1 != wpop.population[current_remain[j]].fitness1 or wpop.population[current_remain[i]].fitness2 != wpop.population[current_remain[j]].fitness2)):
+#                     next_remain.append(current_remain[i])
+#                     flag = 0
+#                     break
+#             if(flag == 1):
+#                 wpop.population[current_remain[i]].rankfit = rank
+#                 tmp_rank.append(current_remain[i])
+#                 eva_ind_cnt += 1
+
+#         crowding_distance(tmp_rank, wpop)
+#         rank += 1
+
+#     for i in range(WPOP_SIZE):
+#         wpop.population[i].global_fitness = wpop.population[i].rankfit + 1 / (wpop.population[i].cd * 100 + 1)
+#         for j in range(WCHROM_LEN):
+#             if(wpop.population[i].chrom[j].global_fitness > wpop.population[i].global_fitness):
+#                 wpop.population[i].chrom[j].global_fitness = wpop.population[i].global_fitness
+#     wpop.population.sort(key=lambda individual: individual.global_fitness)
+#     for i in range(WCHROM_LEN):
+#         ppop[i].population.sort(key=lambda individual: individual.global_fitness)
