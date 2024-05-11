@@ -1,3 +1,12 @@
+import os
+import argparse
+import gc
+import json
+import logging
+import os
+from dataclasses import asdict
+import torch
+from evomerge import instantiate_from_config, load_config, set_seed
 import CC as cc
 import SE as se
 
@@ -26,8 +35,33 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
         
         for layer_idx in input_layer_idx:
             input_scale.append(gray_to_decimal(SEwpop[layer_idx // model_MAX_layer].population[ind_idx].chrom[layer_idx % model_MAX_layer]))
+        # model情報書き出し
+        #tr_input_layer = input_layer
+
         #fitness算出
-        print(input_layer)
+        config = load_config("configs/llm/new_model")
+        set_seed(42)
+        # 1. load model (it's already moved to device)
+        model = instantiate_from_config(config["model"])
+
+        eval_configs = config["eval"]
+        if isinstance(eval_configs, dict):
+            eval_configs = [eval_configs]
+
+        results = {}
+        for eval_config in eval_configs:
+            # 2. load evaluator
+            evaluator = instantiate_from_config(eval_config)
+            # 3. Run!
+            outputs = evaluator(model)
+            CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
+            for i in range(6):
+                SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
+            results[evaluator.name] = asdict(outputs)
+            
+            del evaluator
+            torch.cuda.empty_cache()
+            gc.collect()
 
     for i in range(cc.WPOP_SIZE):
         for j in range(cc.WCHROM_LEN):
