@@ -1,24 +1,38 @@
 import CC as cc
+import SE as se
+import evaluate_fitness as fit
+
+MAX_GENERATION = 100    # 世代交代数
+
 # 初期化
-ppop = [cc.PartialPopulation() for _ in range(cc.WCHROM_LEN)]
-wpop = cc.WholePopulation(ppop)
-cc.evaluate_fitness(wpop, ppop)
+CCppop = [cc.PartialPopulation() for _ in range(cc.WCHROM_LEN)]
+CCwpop = cc.WholePopulation(CCppop)
+SEppop = [se.PartialPopulation() for _ in range(6)]
+SEwpop = [se.WholePopulation(SEppop[i]) for i in range(6)]
+
+fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop)
 best = []
 # 世代交代
-for i in range(cc.MAX_GENERATION):
+for i in range(MAX_GENERATION):
     print(f"第{i+1}世代")
-    best.append(wpop.population[0].global_fitness)
-    print(best[i])
+    
     # 交叉
     for i in range(cc.WCHROM_LEN):
-        ppop[i].crossover()
-    wpop.crossover()
+        CCppop[i].crossover()
+    CCwpop.crossover()
+    for i in range(6):
+        SEppop[i].crossover()
+        SEwpop[i].crossover()
+
 
     # 適応度初期化
     for i in range(cc.WCHROM_LEN):
-        ppop[i].evainit()
-    wpop.evainit()
+        CCppop[i].evainit()
+    CCwpop.evainit()
+    for i in range(6):
+        SEppop[i].evainit()
+        SEwpop[i].evainit()
 
     # 適応度算出
-    cc.evaluate_fitness(wpop, ppop)
+    fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop)
 

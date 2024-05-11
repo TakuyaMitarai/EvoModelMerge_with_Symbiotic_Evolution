@@ -1,4 +1,4 @@
-# Cooperative Coevolution
+#Symbiotic Evolution
 import numpy as np
 import math
 
@@ -8,10 +8,10 @@ PPOP_SIZE = 200         # 部分解集団のサイズ
 WCROSSOVER_PROB = 0.9   # 全体解集団の交叉率
 PCROSSOVER_PROB = 0.5   # 部分解集団の交叉率
 WMUTATE_PROB = 0.05     # 全体解遺伝子の突然変異確率
-PMUTATE_PROB = 0.05     # 部分解遺伝子の突然変異確率
-WCHROM_LEN = 12         # 全体解個体のサイズ
-PCHROM_LEN = 16         # 部分解集団のサイズ
-TOURNAMENT_SIZE = 5     # トーナメントサイズ
+PMUTATE_PROB = 0.05      # 部分解遺伝子の突然変異確率
+WCHROM_LEN = 32         # 全体解個体のサイズ
+PCHROM_LEN = 20         # 部分解集団のサイズ
+TOURNAMENT_SIZE = 5    # トーナメントサイズ
 
 # 部分解個体
 class PartialIndividual:
@@ -64,9 +64,9 @@ class WholeIndividual:
     def __init__(self, ppop):
         self.chrom = []
         self.ppop = ppop
-        for i in range(WCHROM_LEN):
+        for _ in range(WCHROM_LEN):
             index = np.random.randint(0, PPOP_SIZE)
-            self.chrom.append(self.ppop[i].population[index])
+            self.chrom.append(self.ppop.population[index])
         self.global_fitness = float('inf')
         self.rankfit = float('inf')
         self.cd = 0
@@ -90,7 +90,7 @@ class WholeIndividual:
         for i in range(WCHROM_LEN):
             if np.random.rand() < WMUTATE_PROB:
                 index = np.random.randint(0, PPOP_SIZE)
-                self.chrom[i] = self.ppop[i].population[index]
+                self.chrom[i] = self.ppop.population[index]
 
 # 全体解集団
 class WholePopulation:
@@ -114,3 +114,4 @@ class WholePopulation:
             self.population[i].global_fitness = float('inf')
             self.population[i].fitness1 = float('inf')
             self.population[i].fitness2 = float('inf')
+
