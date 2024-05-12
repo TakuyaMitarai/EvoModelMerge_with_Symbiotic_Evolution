@@ -35,10 +35,18 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
         
         for layer_idx in input_layer_idx:
             input_scale.append(gray_to_decimal(SEwpop[layer_idx // model_MAX_layer].population[ind_idx].chrom[layer_idx % model_MAX_layer]))
-        # model情報書き出し
-        #tr_input_layer = input_layer
+        
+        set_input_layer = set(input_layer)
+        dic_input_layer_idx = {}
+        model_input_layer = []
 
-        #fitness算出
+        for index, element in enumerate(set_input_layer):
+            dic_input_layer_idx[element] = index
+        
+        for i in input_layer:
+            model_input_layer.append[dic_input_layer_idx[i]]
+
+        # fitness算出
         config = load_config("configs/llm/new_model")
         set_seed(42)
         # 1. load model (it's already moved to device)
@@ -48,7 +56,6 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
         if isinstance(eval_configs, dict):
             eval_configs = [eval_configs]
 
-        results = {}
         for eval_config in eval_configs:
             # 2. load evaluator
             evaluator = instantiate_from_config(eval_config)
@@ -57,7 +64,6 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
             CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
             for i in range(6):
                 SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
-            results[evaluator.name] = asdict(outputs)
             
             del evaluator
             torch.cuda.empty_cache()
