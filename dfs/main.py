@@ -1,11 +1,12 @@
 import CC as cc
 import SE as se
 import evaluate_fitness as fit
+import random
 
-MAX_GENERATION = 100    # 世代交代数
+MAX_GENERATION = 0    # 世代交代数
 
 # 初期化
-CCppop = [cc.PartialPopulation() for _ in range(cc.WCHROM_LEN)]
+CCppop = [cc.PartialPopulation(i) for i in range(cc.WCHROM_LEN)]
 CCwpop = cc.WholePopulation(CCppop)
 SEppop = [se.PartialPopulation() for _ in range(6)]
 SEwpop = [se.WholePopulation(SEppop[i]) for i in range(6)]

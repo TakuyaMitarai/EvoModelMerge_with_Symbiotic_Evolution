@@ -8,15 +8,22 @@ PPOP_SIZE = 200         # 部分解集団のサイズ
 WCROSSOVER_PROB = 0.9   # 全体解集団の交叉率
 PCROSSOVER_PROB = 0.5   # 部分解集団の交叉率
 WMUTATE_PROB = 0.05     # 全体解遺伝子の突然変異確率
-PMUTATE_PROB = 0.05     # 部分解遺伝子の突然変異確率
-WCHROM_LEN = 12         # 全体解個体のサイズ
-PCHROM_LEN = 16         # 部分解集団のサイズ
+PMUTATE_PROB = 0.1      # 部分解遺伝子の突然変異確率
+WCHROM_LEN = 24         # 全体解個体のサイズ
+PCHROM_LEN = 8          # 部分解集団のサイズ
 TOURNAMENT_SIZE = 5     # トーナメントサイズ
 
 # 部分解個体
 class PartialIndividual:
-    def __init__(self):
-        self.chrom = np.random.randint(0, 2, PCHROM_LEN)
+    def __init__(self, wchrom_idx):
+        if (wchrom_idx + 1) * PCHROM_LEN <= 32:
+            self.chrom = [1] * PCHROM_LEN
+        elif (wchrom_idx + 1) * PCHROM_LEN == 192:
+            self.chrom = np.random.choice([0, 1], size=PCHROM_LEN, p=[0.8, 0.2])
+            self.chrom[PCHROM_LEN-1] = 1
+        else:
+            # self.chrom = np.random.randint(0, 2, PCHROM_LEN)
+            self.chrom = np.random.choice([0, 1], size=PCHROM_LEN, p=[0.8, 0.2])
         self.global_fitness = float('inf')
 
     def crossover(self, parent1, parent2, index1, index2):
@@ -39,10 +46,10 @@ class PartialIndividual:
 
 # 部分解集団
 class PartialPopulation:
-    def __init__(self):
+    def __init__(self, wchrom_idx):
         self.population = []
         for i in range(PPOP_SIZE):
-            individual = PartialIndividual()
+            individual = PartialIndividual(wchrom_idx)
             self.population.append(individual)
     
     def crossover(self):

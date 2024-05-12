@@ -35,47 +35,48 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
                 if CCwpop.population[ind_idx].chrom[i].chrom[j] == 1:
                     input_layer.append((i * cc.PCHROM_LEN + j) % (model_MAX_layer * 2))
                     input_layer_idx.append(i * cc.PCHROM_LEN + j)
-        
         for layer_idx in input_layer_idx:
             input_scale.append(gray_to_decimal(SEwpop[layer_idx // model_MAX_layer].population[ind_idx].chrom[layer_idx % model_MAX_layer]))
         
-        set_input_layer = set(input_layer)
-        dic_input_layer_idx = {}
-        model_input_layer = []
+        if len(input_layer) < 80:
+            input_layer[-1] = 31
+            set_input_layer = set(input_layer)
+            dic_input_layer_idx = {}
+            model_input_layer = []
 
-        for index, element in enumerate(set_input_layer):
-            dic_input_layer_idx[element] = index
-        
-        for i in input_layer:
-            model_input_layer.append[dic_input_layer_idx[i]]
-
-        # モデル情報書き出し
-        output_layer_info(model_input_layer, input_scale)
-        generate_safetensors_index(set_input_layer, 0)
-        generate_safetensors_index(set_input_layer, total_size())
-
-        # fitness算出
-        config = load_config("configs/llm/new_model")
-        set_seed(42)
-        # 1. load model (it's already moved to device)
-        model = instantiate_from_config(config["model"])
-
-        eval_configs = config["eval"]
-        if isinstance(eval_configs, dict):
-            eval_configs = [eval_configs]
-
-        for eval_config in eval_configs:
-            # 2. load evaluator
-            evaluator = instantiate_from_config(eval_config)
-            # 3. Run!
-            outputs = evaluator(model)
-            CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
-            for i in range(6):
-                SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
+            for index, element in enumerate(set_input_layer):
+                dic_input_layer_idx[element] = index
             
-            del evaluator
-            torch.cuda.empty_cache()
-            gc.collect()
+            for i in input_layer:
+                model_input_layer.append(dic_input_layer_idx[i])
+
+            # モデル情報書き出し
+            output_layer_info(model_input_layer, input_scale)
+            generate_safetensors_index(set_input_layer, 0)
+            generate_safetensors_index(set_input_layer, total_size())
+
+            # fitness算出
+            config = load_config("configs/llm/new_model")
+
+            # 1. load model (it's already moved to device)
+            model = instantiate_from_config(config["model"])
+
+            eval_configs = config["eval"]
+            if isinstance(eval_configs, dict):
+                eval_configs = [eval_configs]
+
+            for eval_config in eval_configs:
+                # 2. load evaluator
+                evaluator = instantiate_from_config(eval_config)
+                # 3. Run!
+                outputs = evaluator(model)
+                CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
+                for i in range(6):
+                    SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
+                
+                del evaluator
+                torch.cuda.empty_cache()
+                gc.collect()
 
     for i in range(cc.WPOP_SIZE):
         for j in range(cc.WCHROM_LEN):
