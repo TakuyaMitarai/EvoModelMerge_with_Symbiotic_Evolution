@@ -24,8 +24,8 @@ def generate_safetensors_index(V, total_size):
         "weight_map": {
             "lm_head.weight": "model-00004-of-00004.safetensors",
             "model.embed_tokens.weight": "model-00001-of-00004.safetensors",
-            "model.input_layers": "model-00001-of-00004.safetensors",
-            "model.input_scales": "model-00001-of-00004.safetensors",
+            "model.input_layers": "model-layer_info.safetensors",
+            "model.input_scales": "model-layer_info.safetensors",
         }
     }
 

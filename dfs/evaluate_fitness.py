@@ -9,6 +9,9 @@ import torch
 from evomerge import instantiate_from_config, load_config, set_seed
 import CC as cc
 import SE as se
+from generate_safetensors_index import generate_safetensors_index
+from calculate_total_size import total_size
+from scale_output import output_layer_info
 
 model_MAX_layer = 32
 def gray_to_decimal(gray):
@@ -45,6 +48,11 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
         
         for i in input_layer:
             model_input_layer.append[dic_input_layer_idx[i]]
+
+        # モデル情報書き出し
+        output_layer_info(model_input_layer, input_scale)
+        generate_safetensors_index(set_input_layer, 0)
+        generate_safetensors_index(set_input_layer, total_size())
 
         # fitness算出
         config = load_config("configs/llm/new_model")
