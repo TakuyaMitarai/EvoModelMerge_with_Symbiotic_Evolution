@@ -13,10 +13,25 @@ WCHROM_LEN = 32         # 全体解個体のサイズ
 PCHROM_LEN = 20         # 部分解集団のサイズ
 TOURNAMENT_SIZE = 5    # トーナメントサイズ
 
+# 10進数 →　グレイコード 
+def decimal_to_gray(value, bits=20):
+    max_int = (1 << bits) - 1
+    scaled_value = int((value - 0.1) * max_int / (1.9 - 0.1))
+    binary = f'{scaled_value:0{bits}b}'
+    gray = [int(binary[0])]
+    for i in range(1, len(binary)):
+        gray.append(int(binary[i - 1]) ^ int(binary[i]))
+    return gray
+
 # 部分解個体
 class PartialIndividual:
     def __init__(self):
-        self.chrom = np.random.randint(0, 2, PCHROM_LEN)
+        while 1:
+            value = np.random.normal(1, 0.2)
+            if value > 0.1 and value < 1.9:
+                break
+        self.chrom = decimal_to_gray(value)
+        # self.chrom = np.random.randint(0, 2, PCHROM_LEN)
         self.global_fitness = float('inf')
 
     def crossover(self, parent1, parent2, index1, index2):
