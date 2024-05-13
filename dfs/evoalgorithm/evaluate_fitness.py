@@ -25,7 +25,7 @@ def gray_to_decimal(gray):
         decimal_value += binary_code[j] * (2 ** (19 - j))
     return 0.1 + decimal_value * (1.8 / (binary_max - 0))
 
-def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
+def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, GENERATION):
     for ind_idx in range(cc.WPOP_SIZE):
         input_layer = []
         input_layer_idx = []
@@ -67,6 +67,7 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
 
             for eval_config in eval_configs:
                 # 2. load evaluator
+                set_seed(42 + GENERATION)
                 evaluator = instantiate_from_config(eval_config)
                 # 3. Run!
                 outputs = evaluator(model)
@@ -77,6 +78,8 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
                 del evaluator
                 torch.cuda.empty_cache()
                 gc.collect()
+            
+            print(CCwpop.populaton[ind_idx].global_fitness)
 
     for i in range(cc.WPOP_SIZE):
         for j in range(cc.WCHROM_LEN):

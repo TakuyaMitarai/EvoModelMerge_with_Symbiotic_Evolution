@@ -11,7 +11,7 @@ CCwpop = cc.WholePopulation(CCppop)
 SEppop = [se.PartialPopulation() for _ in range(6)]
 SEwpop = [se.WholePopulation(SEppop[i]) for i in range(6)]
 
-fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop)
+fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, -1)
 best = []
 # 世代交代
 for i in range(MAX_GENERATION):
@@ -35,5 +35,5 @@ for i in range(MAX_GENERATION):
         SEwpop[i].evainit()
 
     # 適応度算出
-    fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop)
+    fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, i)
 
