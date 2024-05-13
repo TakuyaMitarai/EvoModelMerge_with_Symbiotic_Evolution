@@ -7,11 +7,11 @@ import os
 from dataclasses import asdict
 import torch
 from evomerge import instantiate_from_config, load_config, set_seed
-import CC as cc
-import SE as se
-from generate_safetensors_index import generate_safetensors_index
-from calculate_total_size import total_size
-from scale_output import output_layer_info
+import evoalgorithm.CC as cc
+import evoalgorithm.SE as se
+from output_model.generate_safetensors_index import generate_safetensors_index
+from output_model.calculate_total_size import total_size
+from output_model.scale_output import output_layer_info
 
 model_MAX_layer = 32
 def gray_to_decimal(gray):
@@ -84,8 +84,8 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop):
                 CCwpop.population[i].chrom[j].global_fitness = CCwpop.population[i].global_fitness
 
     for i in range(6):
-        for j in range(cc.WPOP_SIZE):
-            for k in range(cc.WCHROM_LEN):
+        for j in range(se.WPOP_SIZE):
+            for k in range(se.WCHROM_LEN):
                 if(SEwpop[i].population[j].chrom[k].global_fitness > SEwpop[i].population[j].global_fitness):
                     SEwpop[i].population[j].chrom[k].global_fitness = SEwpop[i].population[j].global_fitness
 
