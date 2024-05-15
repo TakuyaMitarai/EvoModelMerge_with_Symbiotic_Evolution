@@ -6,7 +6,7 @@ import logging
 import os
 from dataclasses import asdict
 import torch
-# from evomerge import instantiate_from_config, load_config, set_seed
+from evomerge import instantiate_from_config, load_config, set_seed
 import evoalgorithm.CC as cc
 import evoalgorithm.SE as se
 from output_model.generate_safetensors_index import generate_safetensors_index
@@ -53,38 +53,37 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, GENERATION):
             for i in input_layer:
                 model_input_layer.append(dic_input_layer_idx[i])
 
-            print(input_scale)
-            # # モデル情報書き出し
-            # update_config(len(set_input_layer), len(input_layer))
-            # update_num_hops(len(input_layer))
-            # output_layer_info(model_input_layer, input_scale)
-            # generate_safetensors_index(set_input_layer, 0)
-            # generate_safetensors_index(set_input_layer, total_size())
+            # モデル情報書き出し
+            update_config(len(set_input_layer), len(input_layer))
+            update_num_hops(len(input_layer))
+            output_layer_info(model_input_layer, input_scale)
+            generate_safetensors_index(set_input_layer, 0)
+            generate_safetensors_index(set_input_layer, total_size())
 
-            # # モデルロード
-            # config = load_config("configs/llm/new_model")
-            # model = instantiate_from_config(config["model"])
+            # モデルロード
+            config = load_config("configs/llm/new_model")
+            model = instantiate_from_config(config["model"])
 
-            # # モデル評価
-            # eval_configs = config["eval"]
-            # if isinstance(eval_configs, dict):
-            #     eval_configs = [eval_configs]
+            # モデル評価
+            eval_configs = config["eval"]
+            if isinstance(eval_configs, dict):
+                eval_configs = [eval_configs]
 
-            # for eval_config in eval_configs:
-            #     # 2. load evaluator
-            #     set_seed(42 + GENERATION)
-            #     evaluator = instantiate_from_config(eval_config)
-            #     # 3. Run!
-            #     outputs = evaluator(model)
-            #     CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
-            #     for i in range(6):
-            #         SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
+            for eval_config in eval_configs:
+                # 2. load evaluator
+                set_seed(42 + GENERATION)
+                evaluator = instantiate_from_config(eval_config)
+                # 3. Run!
+                outputs = evaluator(model)
+                CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
+                for i in range(6):
+                    SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
                 
-            #     del evaluator
-            #     torch.cuda.empty_cache()
-            #     gc.collect()
+                del evaluator
+                torch.cuda.empty_cache()
+                gc.collect()
             
-            # print(CCwpop.populaton[ind_idx].global_fitness)
+            print(CCwpop.populaton[ind_idx].global_fitness)
 
     for i in range(cc.WPOP_SIZE):
         for j in range(cc.WCHROM_LEN):
