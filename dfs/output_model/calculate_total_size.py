@@ -3,34 +3,38 @@ import torch
 from safetensors.torch import safe_open
 
 def total_size():
-    # Load the index file to get the mapping of tensor names to safetensors files
-    with open("/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model.safetensors.index.json", "r") as file:
+    base_path = "/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/"
+    index_file_path = base_path + "model.safetensors.index.json"
+
+    # Indexファイルをロードしてテンソル名とsafetensorsファイルのマッピングを取得
+    with open(index_file_path, "r") as file:
         index_data = json.load(file)
         weight_map = index_data["weight_map"]
 
-    # Dictionary to hold the file paths that need to be opened
-    files_to_open = set(weight_map.values())
+    # 開く必要があるファイルパスの辞書
+    files_to_open = {base_path + file for file in weight_map.values()}
 
-    # Dictionary to collect tensors data
+    # テンソルデータを収集するための辞書
     tensors_info = {}
 
-    # Open each safetensors file and read the necessary tensor data
+    # 各safetensorsファイルを開き、必要なテンソルデータを読み込む
     for safetensor_file in files_to_open:
         with safe_open(safetensor_file, framework="pt", device="cpu") as f:
-            # Check each key in the weight map
+            # weight_map内の各キーをチェック
             for key, file_path in weight_map.items():
-                if file_path == safetensor_file:
+                full_file_path = base_path + file_path
+                if full_file_path == safetensor_file:
                     if key in f.keys():
                         tensor = f.get_tensor(key)
                         dtype_bit_size = tensor.element_size() * 8
                         tensor_size = tensor.numel()
                         if tensor.dim() == 2:
-                            tensor_size = tensor.shape[0] * tensor.shape[1]  # Product of rows and columns if matrix
-                        # Calculate the total bytes for this tensor and store it
+                            tensor_size = tensor.shape[0] * tensor.shape[1]  # 行と列の積（行列の場合）
+                        # このテンソルの総バイト数を計算して格納
                         tensors_info[key] = tensor_size * dtype_bit_size / 8
 
-    # Sum all the calculated tensor sizes
+    # 計算されたすべてのテンソルサイズを合計
     total_memory_usage = sum(tensors_info.values())
 
-    # Return total memory usage
+    # 総メモリ使用量を返す
     return total_memory_usage
