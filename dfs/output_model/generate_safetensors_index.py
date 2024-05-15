@@ -18,7 +18,7 @@ def generate_safetensors_index(V, total_size):
 
     # Initialize JSON data structure with metadata and weight_map
     index_data = {
-        "metadata": {"total_size": total_size},
+        "metadata": {"total_size": int(total_size)},
         "weight_map": {
             "lm_head.weight": "0model-00003-of-00003.safetensors",
             "model.embed_tokens.weight": "0model-00001-of-00003.safetensors",
