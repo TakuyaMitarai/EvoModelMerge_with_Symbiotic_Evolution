@@ -44,7 +44,7 @@ def generate_safetensors_index(V, total_size):
             elif key in data_1["weight_map"]:
                 index_data["weight_map"][key] = "1" + data_1["weight_map"][key]
 
-    index_data["weight_map"]["model.norm.weight"] = "0model-00001-of-00003.safetensors"
+    index_data["weight_map"]["model.norm.weight"] = "0model-00003-of-00003.safetensors"
 
     # Save as JSON file
     with open('/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model.safetensors.index.json', 'w') as json_file:

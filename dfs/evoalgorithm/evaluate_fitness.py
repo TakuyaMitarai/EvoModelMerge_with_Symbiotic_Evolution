@@ -61,7 +61,7 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, GENERATION):
             generate_safetensors_index(set_input_layer, total_size())
 
             # モデルロード
-            config = load_config("configs/llm/new_model")
+            config = load_config("configs/llm/evollm-v1-jp-10b.yaml")
             model = instantiate_from_config(config["model"])
 
             # モデル評価
