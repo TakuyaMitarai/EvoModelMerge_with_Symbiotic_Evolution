@@ -41,9 +41,9 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, GENERATION):
         for layer_idx in input_layer_idx:
             input_scale.append(gray_to_decimal(SEwpop[layer_idx // model_MAX_layer].population[ind_idx].chrom[layer_idx % model_MAX_layer]))
         
-        if len(input_layer) < 80:
-            input_layer[-1] = 31
-            set_input_layer = set(input_layer)
+        input_layer[-1] = 31
+        set_input_layer = set(input_layer)
+        if len(input_layer) < 80 and len(set_input_layer) < 53:
             dic_input_layer_idx = {}
             model_input_layer = []
 
