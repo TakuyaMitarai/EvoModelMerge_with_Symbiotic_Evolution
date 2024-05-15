@@ -15,6 +15,8 @@ fit.evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, -1)
 best = []
 # 世代交代
 for i in range(MAX_GENERATION):
+    best.append(SEwpop[0].population[0].global_fitness)
+    print(best)
     print(f"第{i+1}世代")
     
     # 交叉
