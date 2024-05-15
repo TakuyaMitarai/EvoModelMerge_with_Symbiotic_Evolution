@@ -22,8 +22,8 @@ def generate_safetensors_index(V, total_size):
             "total_size": total_size
         },
         "weight_map": {
-            "lm_head.weight": "model-00004-of-00004.safetensors",
-            "model.embed_tokens.weight": "model-00001-of-00004.safetensors",
+            "lm_head.weight": "0model-00004-of-00004.safetensors",
+            "model.embed_tokens.weight": "0model-00001-of-00004.safetensors",
             "model.input_layers": "model-layer_info.safetensors",
             "model.input_scales": "model-layer_info.safetensors",
         }
@@ -33,15 +33,37 @@ def generate_safetensors_index(V, total_size):
     for layer in V:
         for attr in attributes:
             key = f"model.layers.{layer}.{attr}"
-            file_index = layer + 1
-            file_name = f"model-{file_index:05d}-of-00004.safetensors"
+
+            if layer < 32:
+                model_index = 0
+            else:
+                model_index = 1
+
+            if layer < 10:
+                file_index = 1
+            elif layer < 10:
+                file_index = 2
+            elif layer < 10:
+                file_index = 3
+            elif layer < 10:
+                file_index = 4
+            elif layer < 10:
+                file_index = 1
+            elif layer < 10:
+                file_index = 2
+            elif layer < 10:
+                file_index = 3
+            elif layer < 64:
+                file_index = 4
+                
+            file_name = f"{model_index}model-{file_index:05d}-of-00004.safetensors"
             index_data["weight_map"][key] = file_name
 
     # Add fixed entry
-    index_data["weight_map"]["model.norm.weight"] = "model-00004-of-00004.safetensors"
+    index_data["weight_map"]["model.norm.weight"] = "0model-00004-of-00004.safetensors"
 
     # Save as JSON file
-    with open('model.safetensors.index.json', 'w') as json_file:
+    with open('/root/.cache/huggingface/hub/models--models--new_model/    /model.safetensors.index.json', 'w') as json_file:
         json.dump(index_data, json_file, indent=2)
 
     # Return the generated data for verification or testing purposes

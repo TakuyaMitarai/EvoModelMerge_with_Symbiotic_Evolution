@@ -58,7 +58,7 @@ class JaMGSM:
 
         question = []
         answers = []
-        for example in random.sample(self.dataset, 10):
+        for example in random.sample(self.dataset, 30):
             question.append(example["question"])
             answers.append(example["answer_number"])
 

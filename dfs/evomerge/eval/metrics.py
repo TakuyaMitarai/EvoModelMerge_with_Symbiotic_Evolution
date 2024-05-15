@@ -95,7 +95,7 @@ def rouge_ja(refs, preds):
 class LanguageDetector:
     def __init__(self):
         model_path = os.environ.get("LID176FTZ_PATH", "lid.176.ftz")
-        self.model = _FastText(model_path)
+        self.model = _FastText("/content/models/lid.176.ftz")
 
     def __call__(self, text: str) -> dict:
         return dict(zip(*self.model.predict(text.replace("\n", ""), k=-1)))
