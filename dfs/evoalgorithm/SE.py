@@ -27,7 +27,7 @@ def decimal_to_gray(value, bits=20):
 class PartialIndividual:
     def __init__(self):
         while 1:
-            value = np.random.normal(1, 0.2)
+            value = np.random.normal(1, 0.1)
             if value > 0.1 and value < 1.9:
                 break
         self.chrom = decimal_to_gray(value)
