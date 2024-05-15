@@ -6,7 +6,7 @@ import math
 WPOP_SIZE = 100         # 全体解集団のサイズ
 PPOP_SIZE = 200         # 部分解集団のサイズ
 WCROSSOVER_PROB = 0.9   # 全体解集団の交叉率
-PCROSSOVER_PROB = 0.5   # 部分解集団の交叉率
+PCROSSOVER_PROB = 0.7   # 部分解集団の交叉率
 WMUTATE_PROB = 0.05     # 全体解遺伝子の突然変異確率
 PMUTATE_PROB = 0.05      # 部分解遺伝子の突然変異確率
 WCHROM_LEN = 32         # 全体解個体のサイズ
@@ -25,14 +25,11 @@ def decimal_to_gray(value, bits=20):
 
 # 部分解個体
 class PartialIndividual:
-    def __init__(self, wchrom_idx):
-        if wchrom_idx == 0:
-            value = 1.0
-        else:
-            while 1:
-                value = np.random.normal(1, 0.2)
-                if value > 0.1 and value < 1.9:
-                    break
+    def __init__(self):
+        while 1:
+            value = np.random.normal(1, 0.2)
+            if value > 0.1 and value < 1.9:
+                break
         self.chrom = decimal_to_gray(value)
         # self.chrom = np.random.randint(0, 2, PCHROM_LEN)
         self.global_fitness = float('inf')
@@ -60,7 +57,7 @@ class PartialPopulation:
     def __init__(self):
         self.population = []
         for i in range(PPOP_SIZE):
-            individual = PartialIndividual(i)
+            individual = PartialIndividual()
             self.population.append(individual)
     
     def crossover(self):

@@ -3,7 +3,7 @@ import evoalgorithm.SE as se
 import evoalgorithm.evaluate_fitness as fit
 import random
 
-MAX_GENERATION = 10    # 世代交代数
+MAX_GENERATION = 100    # 世代交代数
 
 # 初期化
 CCppop = [cc.PartialPopulation(i) for i in range(cc.WCHROM_LEN)]

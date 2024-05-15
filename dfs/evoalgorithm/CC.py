@@ -6,7 +6,7 @@ import math
 WPOP_SIZE = 100         # 全体解集団のサイズ
 PPOP_SIZE = 200         # 部分解集団のサイズ
 WCROSSOVER_PROB = 0.9   # 全体解集団の交叉率
-PCROSSOVER_PROB = 0.5   # 部分解集団の交叉率
+PCROSSOVER_PROB = 0.7   # 部分解集団の交叉率
 WMUTATE_PROB = 0.05     # 全体解遺伝子の突然変異確率
 PMUTATE_PROB = 0.1      # 部分解遺伝子の突然変異確率
 WCHROM_LEN = 24         # 全体解個体のサイズ
