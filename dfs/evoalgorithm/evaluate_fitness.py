@@ -12,6 +12,8 @@ import evoalgorithm.SE as se
 from output_model.generate_safetensors_index import generate_safetensors_index
 from output_model.calculate_total_size import total_size
 from output_model.scale_output import output_layer_info
+from output_model.change_config_json import update_config
+from output_model.change_configuration_evomistral import update_num_hops
 
 model_MAX_layer = 32
 
@@ -52,6 +54,7 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, GENERATION):
                 model_input_layer.append(dic_input_layer_idx[i])
 
             # モデル情報書き出し
+            update_num_hops(len(input_layer))
             output_layer_info(model_input_layer, input_scale)
             generate_safetensors_index(set_input_layer, 0)
             generate_safetensors_index(set_input_layer, total_size())

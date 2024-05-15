@@ -25,11 +25,14 @@ def decimal_to_gray(value, bits=20):
 
 # 部分解個体
 class PartialIndividual:
-    def __init__(self):
-        while 1:
-            value = np.random.normal(1, 0.2)
-            if value > 0.1 and value < 1.9:
-                break
+    def __init__(self, wchrom_idx):
+        if wchrom_idx == 0:
+            value = 1.0
+        else:
+            while 1:
+                value = np.random.normal(1, 0.2)
+                if value > 0.1 and value < 1.9:
+                    break
         self.chrom = decimal_to_gray(value)
         # self.chrom = np.random.randint(0, 2, PCHROM_LEN)
         self.global_fitness = float('inf')
@@ -57,7 +60,7 @@ class PartialPopulation:
     def __init__(self):
         self.population = []
         for i in range(PPOP_SIZE):
-            individual = PartialIndividual()
+            individual = PartialIndividual(i)
             self.population.append(individual)
     
     def crossover(self):

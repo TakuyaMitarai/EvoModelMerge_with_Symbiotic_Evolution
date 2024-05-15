@@ -4,7 +4,7 @@ from safetensors.torch import safe_open
 
 def total_size():
     # Load the index file to get the mapping of tensor names to safetensors files
-    with open("/root/.cache/huggingface/hub/models--models--new_model/    /model.safetensors.index.json", "r") as file:
+    with open("/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model.safetensors.index.json", "r") as file:
         index_data = json.load(file)
         weight_map = index_data["weight_map"]
 
