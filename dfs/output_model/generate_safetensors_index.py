@@ -28,10 +28,10 @@ def generate_safetensors_index(V, total_size):
     }
 
     # Load 0model and 1model JSON files
-    with open("0model.safetensors.index.json", "r") as file:
+    with open("output_model/0model.safetensors.index.json", "r") as file:
         data_0 = json.load(file)
 
-    with open("1model.safetensors.index.json", "r") as file:
+    with open("output_model/1model.safetensors.index.json", "r") as file:
         data_1 = json.load(file)
 
     # Generate entries in the weight_map for each layer and attribute
