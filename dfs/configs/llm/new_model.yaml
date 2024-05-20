@@ -1,7 +1,7 @@
 model:
   target: evomerge.CausalLMWithvLLM
   params:
-    model_path: /root/.cache/huggingface/hub/models--new_model
+    model_path: /root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B
     model_kwargs:
       trust_remote_code: true
       enforce_eager: true
