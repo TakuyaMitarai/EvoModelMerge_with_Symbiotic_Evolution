@@ -27,6 +27,3 @@ def process_safetensors(input_file_path, output_file_path):
         new_file.write(modified_first_line)
         # 残りのファイル内容を書き込む
         new_file.write(rest_of_file)
-
-# 使用例
-# process_safetensors('model-00001-of-00004.safetensors', '1model-00001-of-00004.safetensors')

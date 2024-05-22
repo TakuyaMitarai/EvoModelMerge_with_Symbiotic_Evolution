@@ -45,8 +45,9 @@ def get_obj_from_str(string, reload=False, invalidate_cache=True):
     if reload:
         module_imp = importlib.import_module(module)
         importlib.reload(module_imp)
-    return (importlib.import_module(module, package=None), cls)
-
+    module_imp = importlib.import_module(module, package=None)
+    cls_obj = getattr(module_imp, cls)
+    return cls_obj
 
 def set_seed(seed: int):
     """
