@@ -9,6 +9,10 @@ def replace_func(match):
     number = int(match.group(1)) + 64
     return f'model.layers.{number}'.encode()
 
+def replace_func2(match):
+    number = int(match.group(1)) + 64 + 32
+    return f'model.layers.{number}'.encode()
+
 # 正規表現パターン
 pattern = re.compile(rb'model\.layers\.(\d+)')
 
@@ -31,10 +35,10 @@ for i in range(1, 4):  # 00001 ~ 00003まで繰り返し
         new_file.write(rest_of_file)
 
 # 次の範囲
-input_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00012.safetensors'
-output_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00012.safetensors'
+input_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00004.safetensors'
+output_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00004.safetensors'
 
-for i in range(1, 13):  # 00001 ~ 00012まで繰り返し
+for i in range(1, 5):  # 00001 ~ 00012まで繰り返し
     input_file_path = input_file_template.format(str(i).zfill(2))
     output_file_path = output_file_template.format(str(i).zfill(2))
 
@@ -44,7 +48,7 @@ for i in range(1, 13):  # 00001 ~ 00012まで繰り返し
         rest_of_file = file.read()
 
     # 置換
-    modified_first_line = re.sub(pattern, replace_func, first_line)
+    modified_first_line = re.sub(pattern, replace_func2, first_line)
 
     # 新しいファイルに書き出し
     with open(output_file_path, 'wb') as new_file:
