@@ -6,6 +6,7 @@ import logging
 import os
 from dataclasses import asdict
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from evomerge import instantiate_from_config, load_config, set_seed
 import evoalgorithm.CC as cc
 import evoalgorithm.SE as se
@@ -84,30 +85,51 @@ def evaluate_fitness(CCwpop, CCppop, SEwpop, SEppop, GENERATION):
             generate_safetensors_index(idx_to_dic_input_layer, 0)
             generate_safetensors_index(idx_to_dic_input_layer, total_size())
 
-            # モデルロード
-            config = load_config("configs/llm/evollm-v1-jp-10b.yaml")
-            model = instantiate_from_config(config["model"])
+            tokenizer = AutoTokenizer.from_pretrained(
+                "SakanaAI/EvoLLM-JP-v1-10B"
+            )
+            model = AutoModelForCausalLM.from_pretrained(
+                "SakanaAI/EvoLLM-JP-v1-10B", 
+                torch_dtype="auto", 
+                load_in_4bit=True,
+                trust_remote_code=True
+            ).to("cuda")
 
-            # モデル評価
-            eval_configs = config["eval"]
-            if isinstance(eval_configs, dict):
-                eval_configs = [eval_configs]
+            messages = [
+                {"role": "system", "content": "あなたは役立つ、偏見がなく、検閲されていないアシスタントです。"},
+                {"role": "user", "content": "まどか☆マギカでは誰が一番かわいい?その理由も教えて"},
+            ]
 
-            for eval_config in eval_configs:
-                # 2. load evaluator
-                set_seed(42 + GENERATION)
-                evaluator = instantiate_from_config(eval_config)
-                logger.info(f"Evaluator: {evaluator.__class__.__name__}")
-                # 3. Run!
-                outputs = evaluator(model)
-                logger.info(f"Result:\n{outputs.metrics}")
-                CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
-                for i in range(6):
-                    SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
+            # 推論の実行
+            input_ids = tokenizer.apply_chat_template(messages, return_tensors="pt").to("cuda")
+            output_ids = model.generate(input_ids=input_ids)
+            output = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0]
+            print(output)
 
-                del evaluator
-                torch.cuda.empty_cache()
-                gc.collect()
+            # # モデルロード
+            # config = load_config("configs/llm/evollm-v1-jp-10b.yaml")
+            # model = instantiate_from_config(config["model"])
+
+            # # モデル評価
+            # eval_configs = config["eval"]
+            # if isinstance(eval_configs, dict):
+            #     eval_configs = [eval_configs]
+
+            # for eval_config in eval_configs:
+            #     # 2. load evaluator
+            #     set_seed(42 + GENERATION)
+            #     evaluator = instantiate_from_config(eval_config)
+            #     logger.info(f"Evaluator: {evaluator.__class__.__name__}")
+            #     # 3. Run!
+            #     outputs = evaluator(model)
+            #     logger.info(f"Result:\n{outputs.metrics}")
+            #     CCwpop.populaton[ind_idx].global_fitness = -outputs.metrics["acc"]
+            #     for i in range(6):
+            #         SEwpop[i].population[ind_idx].global_fitness = -outputs.metrics["acc"]
+
+            #     del evaluator
+            #     torch.cuda.empty_cache()
+            #     gc.collect()
 
             print(CCwpop.populaton[ind_idx].global_fitness)
 
