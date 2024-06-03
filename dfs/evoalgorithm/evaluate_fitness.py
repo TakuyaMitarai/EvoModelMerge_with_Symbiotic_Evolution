@@ -7,7 +7,7 @@ import os
 from dataclasses import asdict
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from evomerge import instantiate_from_config, load_config, set_seed
+# from evomerge import instantiate_from_config, load_config, set_seed
 import evoalgorithm.CC as cc
 import evoalgorithm.SE as se
 from output_model.generate_safetensors_index import generate_safetensors_index
