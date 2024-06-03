@@ -48,7 +48,7 @@ def generate_safetensors_index(idx_to_dic_input_layer, total_size):
     index_data["weight_map"]["model.norm.weight"] = "0model-00003-of-00003.safetensors"
 
     # Save as JSON file
-    with open('/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model.safetensors.index.json', 'w') as json_file:
+    with open('.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model.safetensors.index.json', 'w') as json_file:
         json.dump(index_data, json_file, indent=2)
 
     # Return the generated data for verification or testing purposes

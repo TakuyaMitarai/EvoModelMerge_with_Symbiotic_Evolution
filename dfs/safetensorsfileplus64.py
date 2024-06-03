@@ -1,8 +1,8 @@
 import re
 
 # ファイルパスのテンプレート
-input_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/0model-0000{}-of-00003.safetensors'
-output_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/0model-0000{}-of-00003.safetensors'
+input_file_template = '~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/0model-0000{}-of-00003.safetensors'
+output_file_template = '~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/0model-0000{}-of-00003.safetensors'
 
 # 置換関数
 def replace_func(match):
@@ -35,8 +35,8 @@ for i in range(1, 4):  # 00001 ~ 00003まで繰り返し
         new_file.write(rest_of_file)
 
 # 次の範囲
-input_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00004.safetensors'
-output_file_template = '/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00004.safetensors'
+input_file_template = '~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00004.safetensors'
+output_file_template = '~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/1model-0000{}-of-00004.safetensors'
 
 for i in range(1, 5):  # 00001 ~ 00012まで繰り返し
     input_file_path = input_file_template.format(str(i).zfill(2))

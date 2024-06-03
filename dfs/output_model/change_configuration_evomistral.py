@@ -2,7 +2,7 @@ import re
 
 
 def update_num_hops(nh: int):
-    file_path = "/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-v1-JP-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/configuration_evomistral.py"
+    file_path = "~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-v1-JP-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/configuration_evomistral.py"
 
     # ファイルの内容を読み込む
     with open(file_path, "r") as file:

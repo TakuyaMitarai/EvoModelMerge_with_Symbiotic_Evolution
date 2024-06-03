@@ -3,7 +3,7 @@ import torch
 from safetensors.torch import safe_open
 
 def total_size():
-    base_path = "/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/"
+    base_path = "~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/"
     index_file_path = base_path + "model.safetensors.index.json"
 
     # Indexファイルをロードしてテンソル名とsafetensorsファイルのマッピングを取得

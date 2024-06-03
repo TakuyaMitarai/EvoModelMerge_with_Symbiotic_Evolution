@@ -19,7 +19,7 @@ def process_files(idx_to_dic_input_layer):
 
         if key in weight_map:
             path = weight_map[key]
-            file_path = f"/root/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/{path}"
+            file_path = f"~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/{path}"
 
             with open(file_path, 'rb') as file:
                 first_line = file.readline()
