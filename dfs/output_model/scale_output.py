@@ -1,5 +1,6 @@
 import torch
 from safetensors.torch import save_file, safe_open
+import os
 
 def output_layer_info(input_layers, input_scales):
     # 入力データをテンソルに変換
@@ -7,7 +8,7 @@ def output_layer_info(input_layers, input_scales):
     input_scales_tensor = torch.tensor(input_scales)
 
     data_to_save = {"input_layers": input_layers_tensor, "input_scales": input_scales_tensor}
-    save_path = "~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model-layer_info.safetensors"
+    save_path = os.path.expanduser("~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/model-layer_info.safetensors")
     save_file(data_to_save, save_path)
 
     # テンソルを保持するディクショナリを初期化

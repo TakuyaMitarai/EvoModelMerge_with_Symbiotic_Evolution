@@ -1,5 +1,6 @@
 import json
 import re
+import os
 
 def process_files_init(idx_to_dic_input_layer):
     # Load 0model and 1model JSON files
@@ -20,7 +21,7 @@ def process_files_init(idx_to_dic_input_layer):
         if key in weight_map:
             path = weight_map[key]
             file_path = f"~/.cache/huggingface/hub/models--SakanaAI--EvoLLM-JP-v1-10B/snapshots/78cad5aad0897f75df8b6ee17983de0be133eb0f/{path}"
-
+            file_path = os.path.expanduser(file_path)
             with open(file_path, 'rb') as file:
                 first_line = file.readline()
                 rest_of_file = file.read()
