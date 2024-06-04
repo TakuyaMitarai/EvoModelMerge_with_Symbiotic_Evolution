@@ -38,7 +38,7 @@ def generate_safetensors_index(idx_to_dic_input_layer, total_size):
     # Generate entries in the weight_map for each layer and attribute
     for layer in V:
         for attr in attributes:
-            key = f"model.layers.{layer}.{attr}"
+            key = f"model.layers.{layer+64}.{attr}"
             # Check if key exists in 0model and 1model, prioritize 0model
             if key in data_0["weight_map"]:
                 index_data["weight_map"][key] = "0" + data_0["weight_map"][key]
