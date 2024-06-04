@@ -20,6 +20,7 @@ def total_size():
 
     # 各safetensorsファイルを開き、必要なテンソルデータを読み込む
     for safetensor_file in files_to_open:
+        print(safetensor_file)
         with safe_open(safetensor_file, framework="pt", device="cpu") as f:
             # weight_map内の各キーをチェック
             for key, file_path in weight_map.items():
